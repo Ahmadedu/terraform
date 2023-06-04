@@ -6,25 +6,41 @@ on:
       - main
 
 jobs:
-  tflint:
+#   tflint:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+
+#       - uses: terraform-linters/setup-tflint@v1
+#         name: Setup TFLint
+#         with:
+#           tflint_version: latest
+
+#       - name: Run TFLint
+#         run: tflint -f json aws > tflint-output.json
+
+#       - uses: actions/upload-artifact@v2
+#         with:
+#           name: TFLint
+#           path: tflint-output.json
+#         if: always()     
+
+  terrascan:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: terraform-linters/setup-tflint@v1
-        name: Setup TFLint
+      - name: Run Terrascan
+        id: terrascan
+        uses: accurics/terrascan-action@v1
         with:
-          tflint_version: latest
-
-      - name: Run TFLint
-        run: tflint -f json aws > tflint-output.json
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: TFLint
-          path: tflint-output.json
-        if: always()                        
+          iac_type: 'terraform'
+          iac_version: 'v14'
+          policy_type: 'aws'
+          only_warn: true
+          iac_dir: 'aws'
 
   build:
     runs-on: ubuntu-20.04                    
